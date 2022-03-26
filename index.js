@@ -7,10 +7,10 @@ var cors = require('cors');
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(express.static('frontend/polygon-nft-generator-react/build'))
+
 app.use("/api", routes) // new
-app.use("/", function(req, res){
-    res.send("OK");
-})
+
 app.listen(process.env.PORT || 5000, () => {
     console.log("Server has started!");
 });
