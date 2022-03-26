@@ -26,7 +26,7 @@ const InputRow = (props) => {
         }
         {
           props.type === "textarea" && (
-            <textarea value={props.value} className='h-16 w-full border hover:border hover:outline-0 active:outline-0 focus:outline-0 rounded' onChange={(e)=>onChange(e.target.value)}></textarea>
+            <textarea value={props.value} className='p-2 h-16 w-full border hover:border hover:outline-0 active:outline-0 focus:outline-0 rounded' onChange={(e)=>onChange(e.target.value)}></textarea>
           )
         }
       </div>
@@ -41,6 +41,8 @@ function App() {
   const [tokenSymbol, setTokenSymbol] = useState(null);
   const [tokenId, setTokenId] = useState(null);
   const [tokenURI, setTokenURI] = useState(null);
+  const [foundTokenDetails, setFoundTokenDetails] = useState(null);
+  const [txnHash, setTxnHash] = useState(null);
   const [error, setError] = useState(null);
 
   const [createContractMode, setCreateContractMode] = useState(!contractAddress);
@@ -54,7 +56,7 @@ function App() {
 
   return (
     <div className="h-screen w-full">
-      {loading && <div className='absolute h-screen w-full flex bg-white opacity-80'>
+      {loading && <div className='z-50 absolute h-screen w-full flex bg-white opacity-80'>
           <div className='m-auto'>
             <div className='text-center'>
               <img className='h-8 d-inline mx-auto animate-bounce' src={logo}/>
@@ -84,23 +86,19 @@ function App() {
                 <h5 className='font-bold'>Step 1. Launch Your NFT</h5>
               </div>
               <div className='p-4'>
-                {
-                  !!contractAddress && (
-                    <InputRow title={'Contract Saved'} value={contractAddress} onChange={(v)=>setContractAddress(v)}/>                    
-                  )
-                }
                 <InputRow title={'Token Name'} value={tokenName} onChange={(v)=>setTokenName(v)}/>
                 <InputRow title={'Token Symbol'} value={tokenSymbol} postProcess={(t) => (t || "").toUpperCase()} onChange={(v)=>setTokenSymbol(v)}/>
 
                 <button className='btn mt-2 bg-purple-700 text-white w-full rounded shadow p-2 font-bold' onClick={()=>{
                   if (tokenName && tokenSymbol) {
                     setLoading(true);
+                    setError(null);
                     createContract({
                       tokenName,
                       tokenSymbol
                     }).then(({ data })=>{
                       setContractAddress(data.address);
-                      window.localStorage.setItem('pg-contract-address', data.address)
+                      window.localStorage.setItem('pg-contract-address', data.address);
                     }).catch((e)=>{
                       setError(e?.response?.data?.message);
                     }).finally(()=>{
@@ -108,7 +106,7 @@ function App() {
                     })
                   }
                 }}>
-                  Create Polygon NFT Contract
+                  Create New Polygon NFT Contract
                 </button>
               </div>
           </div>
@@ -117,7 +115,7 @@ function App() {
           <div className='shadow-lg rounded relative'>
               {
                 !contractAddress && (
-                  <div className='absolute w-full top-0 left-0 h-full bg-white opacity-90 flex'>
+                  <div className='z-50 absolute w-full top-0 left-0 h-full bg-white opacity-90 flex'>
                     <div className='m-auto'>
                       <div className='text-center mb-4'>
                         <img className='h-8 d-inline mx-auto' src={logo}/>
@@ -131,15 +129,27 @@ function App() {
                 <h5 className='font-bold'>Step 2. Mint and give someone</h5>
               </div>
               <div className='p-4'>
+                {
+                  !!contractAddress && (
+                    <div className='break-words'>
+                        <h5 className='text-normal font-semibold mb-1'>Your NFT Contract Deployed</h5>
+                        <a className='text-sm text-blue-600 mb-2 block' target={'_blank'} href={`https://polygonscan.com/address/${contractAddress}`}>
+                          https://polygonscan.com/address/{contractAddress}
+                        </a>
+                    </div>
+                  )
+                }
                 <InputRow title={'Recepient Address'} value={receiverAddress} onChange={(v)=>setReceiverAddress(v)}/>
                 <InputRow title={'Content of the Token for recepient'} helpText={'e.g. A IPFS url containing the metadata'} value={tokenURI} type={"textarea"} onChange={(v)=>setTokenURI(v)}/>
                 <button className='btn mt-2 bg-purple-700 text-white w-full rounded shadow p-2 font-bold' onClick={()=>{
                   setLoading(true);
+                  setError(null);
                   mintAndGive({
+                    contractAddress,
                     receiverAddress,
                     tokenURI
                   }).then(({ data })=>{
-                    console.log(data);
+                    setTxnHash(data.txn.hash);
                   }).catch((e)=>{
                     setError(e?.response?.data?.message);
                   }).finally(()=>{
@@ -148,6 +158,19 @@ function App() {
                 }}>
                   Mint a NFT and give recipient
                 </button>
+                {
+                  txnHash && (
+                    <div className='mt-4'>
+                      <p className='break-words'>
+                        <h5 className='text-sm font-semibold mb-2'>View Transaction on PolygonScan</h5>
+                        <a className='text-sm text-blue-600 mb-2 block' target={'_blank'} href={`https://polygonscan.com/tx/${txnHash}`}>
+                          https://polygonscan.com/tx/{txnHash}
+                        </a>
+                        <p className='text-sm mb-2 mt-4'>The receipient can go to Metamask and click "import token" and paste this NFT contract address: <strong className='text-purple-700'>{contractAddress}</strong></p>
+                      </p>
+                    </div>
+                  )
+                }
               </div>
           </div>
         </div>
@@ -155,7 +178,7 @@ function App() {
           <div className='shadow-lg rounded relative'>
               {
                 !contractAddress && (
-                  <div className='absolute w-full top-0 left-0 h-full bg-white opacity-90 flex'>
+                  <div className='z-50 absolute w-full top-0 left-0 h-full bg-white opacity-90 flex'>
                     <div className='m-auto'>
                       <div className='text-center mb-4'>
                         <img className='h-8 d-inline mx-auto' src={logo}/>
@@ -173,11 +196,13 @@ function App() {
                 <InputRow title={'Token ID'} value={tokenId} onChange={(v)=>setTokenId(v)}/>
                 <button className='btn mt-2 bg-purple-700 text-white w-full rounded shadow p-2 font-bold' onClick={()=>{
                    setLoading(true);
+                   setError(null);
                    getTokenDetails({
                      tokenId,
                      contractAddress
                    }).then(({ data })=>{
                     console.log(data);
+                    setFoundTokenDetails(data);
                    }).catch((e)=>{
                      setError(e?.response?.data?.message);
                    }).finally(()=>{
@@ -186,6 +211,17 @@ function App() {
                 }}>
                   Get Token Details
                 </button>
+                {
+                  !!foundTokenDetails && (
+                    <div className='mt-4'>
+                      <p className='break-words'>
+                        <h5 className='text-sm font-semibold mb-2'>Token Details</h5>
+                        <p className='text-sm text-gray-500 mb-2 font-semibold'>Token ID: {foundTokenDetails.tokenId}</p>
+                        <p className='text-sm text-gray-500 font-semibold'>Token URI: {foundTokenDetails.tokenURI}</p>
+                      </p>
+                    </div>
+                  )
+                }
               </div>
           </div>
         </div>
