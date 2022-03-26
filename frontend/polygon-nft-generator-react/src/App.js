@@ -115,7 +115,7 @@ function App() {
           <div className='shadow-lg rounded relative'>
               {
                 !contractAddress && (
-                  <div className='z-50 absolute w-full top-0 left-0 h-full bg-white opacity-90 flex'>
+                  <div className='z-40 absolute w-full top-0 left-0 h-full bg-white opacity-90 flex'>
                     <div className='m-auto'>
                       <div className='text-center mb-4'>
                         <img className='h-8 d-inline mx-auto' src={logo}/>
@@ -178,7 +178,7 @@ function App() {
           <div className='shadow-lg rounded relative'>
               {
                 !contractAddress && (
-                  <div className='z-50 absolute w-full top-0 left-0 h-full bg-white opacity-90 flex'>
+                  <div className='z-40 absolute w-full top-0 left-0 h-full bg-white opacity-90 flex'>
                     <div className='m-auto'>
                       <div className='text-center mb-4'>
                         <img className='h-8 d-inline mx-auto' src={logo}/>
