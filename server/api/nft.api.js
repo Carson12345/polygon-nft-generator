@@ -98,8 +98,8 @@ module.exports = {
                 receiverAddress,
                 tokenURI
             } = {
-                ... req.body,
-                ... req.query
+                ... req.query,
+                ... req.body
             };
 
             let result = await mintToAddressByContract({
