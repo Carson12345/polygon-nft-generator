@@ -1,5 +1,6 @@
 const hre = require("hardhat");
-const ContractJSON = require("../../artifacts/contracts/NFTGenerator.sol/NFTGenerator.json");
+// only work in testnet and need remove artifacts from gitignore
+// const ContractJSON = require("../../artifacts/contracts/NFTGenerator.sol/NFTGenerator.json");
 const config = require("../../config");
 const { ethers } = hre;
 const privateKey = process.env.PRIVATE_KEY // seed phrase or private key for your Metamask account
