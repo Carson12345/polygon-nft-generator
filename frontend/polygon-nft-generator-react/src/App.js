@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import logo from './polygon-matic-logo.svg';
+import { Widget } from "@uploadcare/react-widget";
 import axios from 'axios';
 import './App.css';
 import { mintAndGive, createContract, getTokenDetails } from './service/nft.service.js';
@@ -20,8 +21,15 @@ const InputRow = (props) => {
           )
         }
         {
-          props.type !== "textarea" && (
+          !(['textarea','imageUpload'].includes(props.type)) && (
             <input value={props.value} className='w-full border p-2 hover:border hover:outline-0 active:outline-0 focus:outline-0 rounded' onChange={(e)=>onChange(e.target.value)}/>
+          )
+        }
+        {
+          props.type === 'imageUpload' && (
+            <Widget publicKey="8e135b0909f25b161328" onChange={(d)=>{
+              onChange(d.cdnUrl);
+            }}/>
           )
         }
         {
@@ -43,6 +51,9 @@ function App() {
   const [tokenURI, setTokenURI] = useState(null);
   const [foundTokenDetails, setFoundTokenDetails] = useState(null);
   const [txnHash, setTxnHash] = useState(null);
+  const [nftName, setNftName] = useState(null);
+  const [nftDescription, setNftDescription] = useState(null);
+  const [nftImage, setNftImage] = useState(null);
   const [error, setError] = useState(null);
 
   const [createContractMode, setCreateContractMode] = useState(!contractAddress);
@@ -140,6 +151,9 @@ function App() {
                   )
                 }
                 <InputRow title={'Recepient Address'} value={receiverAddress} onChange={(v)=>setReceiverAddress(v)}/>
+                <InputRow title={'NFT Name'} value={nftName}  onChange={(v)=>setNftName(v)}/>
+                <InputRow title={'NFT Description'} value={nftDescription}  onChange={(v)=>setNftDescription(v)}/>
+                <InputRow title={'NFT Image'} value={nftImage} type={'imageUpload'}  onChange={(v)=>setNftImage(v)}/>
                 <InputRow title={'Content of the Token for recepient'} helpText={'e.g. A IPFS url containing the metadata'} value={tokenURI} type={"textarea"} onChange={(v)=>setTokenURI(v)}/>
                 <button className='btn mt-2 bg-purple-700 text-white w-full rounded shadow p-2 font-bold' onClick={()=>{
                   setLoading(true);
@@ -147,7 +161,10 @@ function App() {
                   mintAndGive({
                     contractAddress,
                     receiverAddress,
-                    tokenURI
+                    tokenURI,
+                    name: nftName,
+                    description: nftDescription,
+                    imageUrl: nftImage
                   }).then(({ data })=>{
                     setTxnHash(data.txn.hash);
                   }).catch((e)=>{

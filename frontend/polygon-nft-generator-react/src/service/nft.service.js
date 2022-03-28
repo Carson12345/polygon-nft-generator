@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const host = `https://polygon-nft-generator.herokuapp.com`;
+// const host = `https://polygon-nft-generator.herokuapp.com`;
+const host = `http://localhost:5000`;
 
 export const createContract = ({
     tokenName,
@@ -12,12 +13,18 @@ export const createContract = ({
 export const mintAndGive = ({
     contractAddress,
     receiverAddress,
-    tokenURI
+    tokenURI,
+    name,
+    description,
+    imageUrl
 }) => {
     return axios.post(`${host}/api/nft/contract/mint`,{
         contractAddress,
         receiverAddress,
-        tokenURI
+        tokenURI,
+        name,
+        description,
+        imageUrl
     })
 }
 

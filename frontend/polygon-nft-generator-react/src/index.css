@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+.uploadcare--button, .uploadcare--button:hover, .uploadcare--widget__button, .uploadcare--widget__button:hover {
+  outline: none !important;
+  background-color: blueviolet;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

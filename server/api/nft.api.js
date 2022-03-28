@@ -2,13 +2,12 @@ const hre = require("hardhat");
 // only work in testnet and need remove artifacts from gitignore
 // const ContractJSON = require("../../artifacts/contracts/NFTGenerator.sol/NFTGenerator.json");
 const config = require("../../config");
+const nftStorageService = require('../service/nft-storage.service.js');
 const { ethers } = hre;
 const privateKey = process.env.PRIVATE_KEY // seed phrase or private key for your Metamask account
-
 const provider = new ethers.providers.WebSocketProvider(config.alchemyUrl + process.env.ALCHEMY_API_KEY);
 const wallet = new ethers.Wallet(privateKey);
 const signer = wallet.connect(provider);
-
 async function deployNFTContract({
     tokenName,
     tokenSymbol
@@ -29,8 +28,23 @@ async function deployNFTContract({
 async function mintToAddressByContract({
     contractAddress,
     receiverAddress,
-    tokenURI
+    tokenURI,
+    imageUrl,
+    name,
+    description
 }) {
+
+    if (imageUrl) {
+        tokenURI = await nftStorageService.storeMetaDataService({
+            imageUrl,
+            name,
+            description,
+            content: tokenURI
+        });
+
+        console.log("Metadata URL: ", tokenURI);
+    }
+
     // only work in testnet
     // const NFTContract = new ethers.Contract(contractAddress, ContractJSON.abi, signer);
     const NFTContract = await ethers.getContractFactory("NFTGenerator");
@@ -96,7 +110,10 @@ module.exports = {
             let {
                 contractAddress,
                 receiverAddress,
-                tokenURI
+                tokenURI,
+                imageUrl,
+                name,
+                description
             } = {
                 ... req.query,
                 ... req.body
@@ -105,7 +122,10 @@ module.exports = {
             let result = await mintToAddressByContract({
                 contractAddress,
                 receiverAddress,
-                tokenURI
+                tokenURI,
+                imageUrl,
+                name,
+                description
             });
 
             return res.json(result);
