@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const host = `https://polygon-nft-generator.herokuapp.com`;
-const host = `http://localhost:5000`;
+const host = `https://polygon-nft-generator.herokuapp.com`;
+// const host = `http://localhost:5000`;
 
 export const createContract = ({
     tokenName,
