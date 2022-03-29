@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/static/css/main.27a22b22.css",
-    "main.js": "/static/js/main.283b42c5.js",
+    "main.css": "/static/css/main.06f1d587.css",
+    "main.js": "/static/js/main.0f4a0109.js",
     "ucare-widget-chunk.js": "/static/js/ucare-widget-chunk.93dcd259.chunk.js",
     "ucare-panel-chunk.js": "/static/js/ucare-panel-chunk.1f623bd0.chunk.js",
     "static/js/787.31349124.chunk.js": "/static/js/787.31349124.chunk.js",
     "static/js/46.bacd3297.chunk.js": "/static/js/46.bacd3297.chunk.js",
     "static/media/polygon-matic-logo.svg": "/static/media/polygon-matic-logo.97ff139cc7379a42cf141d74a6595fff.svg",
     "index.html": "/index.html",
-    "main.27a22b22.css.map": "/static/css/main.27a22b22.css.map",
-    "main.283b42c5.js.map": "/static/js/main.283b42c5.js.map",
+    "main.06f1d587.css.map": "/static/css/main.06f1d587.css.map",
+    "main.0f4a0109.js.map": "/static/js/main.0f4a0109.js.map",
     "ucare-widget-chunk.93dcd259.chunk.js.map": "/static/js/ucare-widget-chunk.93dcd259.chunk.js.map",
     "ucare-panel-chunk.1f623bd0.chunk.js.map": "/static/js/ucare-panel-chunk.1f623bd0.chunk.js.map",
     "787.31349124.chunk.js.map": "/static/js/787.31349124.chunk.js.map",
     "46.bacd3297.chunk.js.map": "/static/js/46.bacd3297.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.27a22b22.css",
-    "static/js/main.283b42c5.js"
+    "static/css/main.06f1d587.css",
+    "static/js/main.0f4a0109.js"
   ]
 }
