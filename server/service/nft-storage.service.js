@@ -7,11 +7,12 @@ const API_KEY = process.env.NFT_STORAGE_API_KEY;
 
 // For example's sake, we'll fetch an image from an HTTP URL.
 // In most cases, you'll want to use files provided by a user instead.
-async function getImageByUrl(imageOriginUrl) {
-  const r = await axios.get(imageOriginUrl, {
+async function getImageByUrl(fileInfo) {
+  const r = await axios.get(fileInfo.cdnUrl, {
       responseType: 'arraybuffer'
   })
-  return new Blob(r.data);
+  const imageData = new File(r.data, fileInfo.name, { type: fileInfo.mimeType })
+  return imageData;
 }
 
 async function storeMetaDataService({

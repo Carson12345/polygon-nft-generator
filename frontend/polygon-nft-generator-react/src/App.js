@@ -28,7 +28,7 @@ const InputRow = (props) => {
         {
           props.type === 'imageUpload' && (
             <Widget publicKey="8e135b0909f25b161328" onChange={(d)=>{
-              onChange(d.cdnUrl);
+              onChange(d);
             }}/>
           )
         }
@@ -67,7 +67,7 @@ function App() {
 
   return (
     <div className="h-screen w-full">
-      {loading && <div className='z-50 absolute h-screen w-full flex bg-white opacity-80'>
+      {loading && <div className='z-50 fixed min-h-screen h-full w-full flex bg-white opacity-80'>
           <div className='m-auto'>
             <div className='text-center'>
               <img className='h-8 d-inline mx-auto animate-bounce' src={logo}/>
@@ -154,7 +154,7 @@ function App() {
                 <InputRow title={'NFT Name'} value={nftName}  onChange={(v)=>setNftName(v)}/>
                 <InputRow title={'NFT Description'} value={nftDescription}  onChange={(v)=>setNftDescription(v)}/>
                 <InputRow title={'NFT Image'} value={nftImage} type={'imageUpload'}  onChange={(v)=>setNftImage(v)}/>
-                <InputRow title={'Content of the Token for recepient'} helpText={'e.g. A IPFS url containing the metadata'} value={tokenURI} type={"textarea"} onChange={(v)=>setTokenURI(v)}/>
+                <InputRow title={'Content of the Token for recepient'} helpText={'e.g. additional content you want to store'} value={tokenURI} type={"textarea"} onChange={(v)=>setTokenURI(v)}/>
                 <button className='btn mt-2 bg-purple-700 text-white w-full rounded shadow p-2 font-bold' onClick={()=>{
                   setLoading(true);
                   setError(null);
