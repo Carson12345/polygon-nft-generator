@@ -3,6 +3,8 @@ const hre = require("hardhat");
 // const ContractJSON = require("../../artifacts/contracts/NFTGenerator.sol/NFTGenerator.json");
 const config = require("../../config");
 const nftStorageService = require('../service/nft-storage.service.js');
+const pinataService = require("../service/pinata.service");
+
 const { ethers } = hre;
 const privateKey = process.env.PRIVATE_KEY // seed phrase or private key for your Metamask account
 const provider = new ethers.providers.WebSocketProvider(config.alchemyUrl + process.env.ALCHEMY_API_KEY);
@@ -31,33 +33,48 @@ async function mintToAddressByContract({
     tokenURI,
     imageUrl,
     name,
-    description
+    description,
+    imageStorage
 }) {
 
     if (imageUrl) {
-        tokenURI = await nftStorageService.storeMetaDataService({
-            imageUrl,
-            name,
-            description,
-            content: tokenURI
+        let imageIPFS = await pinataService.pinFileByUrl({
+            url: imageUrl.cdnUrl
         });
+
+        let metadataIPFS = await pinataService.pinJSON({
+            name,
+            json: {
+                image: `ipfs://${imageIPFS.IpfsHash}`,
+                name,
+                description,
+                properties: {
+                    type: "identity-proof",
+                    content: {
+                        "text/plain": tokenURI
+                    }
+                }
+            }
+        })
+
+        tokenURI = `ipfs://${metadataIPFS.IpfsHash}`,
 
         console.log("Metadata URL: ", tokenURI);
     }
 
     // only work in testnet
     // const NFTContract = new ethers.Contract(contractAddress, ContractJSON.abi, signer);
-    const NFTContract = await ethers.getContractFactory("NFTGenerator");
-    const NFTContractCallable = NFTContract.attach(contractAddress);
-    console.log(`Minting TokenURI: ${tokenURI} to: ${receiverAddress}`);
-    let txn = await NFTContractCallable.mint(receiverAddress, tokenURI).then();
-    console.log("Minted");
+    // const NFTContract = await ethers.getContractFactory("NFTGenerator");
+    // const NFTContractCallable = NFTContract.attach(contractAddress);
+    // console.log(`Minting TokenURI: ${tokenURI} to: ${receiverAddress}`);
+    // let txn = await NFTContractCallable.mint(receiverAddress, tokenURI).then();
+    // console.log("Minted");
     return ({
-        txn
+        // txn
     });
 }
 
-async function getTokenURIByContractAndTokenId ({
+async function getTokenURIByContractAndTokenId({
     tokenId,
     contractAddress
 }) {
@@ -88,8 +105,8 @@ module.exports = {
                 tokenName,
                 tokenSymbol
             } = {
-                ... req.body,
-                ... req.query
+                ...req.body,
+                ...req.query
             };
 
             let result = await deployNFTContract({
@@ -115,8 +132,8 @@ module.exports = {
                 name,
                 description
             } = {
-                ... req.query,
-                ... req.body
+                ...req.query,
+                ...req.body
             };
 
             let result = await mintToAddressByContract({
@@ -144,8 +161,8 @@ module.exports = {
                 receiverAddress,
                 tokenURI
             } = {
-                ... req.body,
-                ... req.query
+                ...req.body,
+                ...req.query
             };
 
             let contract = await deployNFTContract({
@@ -160,7 +177,7 @@ module.exports = {
             });
 
             return res.json({
-                ... result,
+                ...result,
                 contractAddress: contract.address,
                 tokenURI
             });
@@ -177,8 +194,8 @@ module.exports = {
                 contractAddress,
                 tokenId
             } = {
-                ... req.body,
-                ... req.query
+                ...req.body,
+                ...req.query
             };
 
             let result = await getTokenURIByContractAndTokenId({
@@ -187,7 +204,7 @@ module.exports = {
             })
 
             return res.json({
-                ... result,
+                ...result,
                 contractAddress
             });
         } catch (error) {

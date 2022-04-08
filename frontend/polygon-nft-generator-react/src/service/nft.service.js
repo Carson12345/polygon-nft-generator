@@ -17,7 +17,8 @@ export const mintAndGive = ({
     tokenURI,
     name,
     description,
-    imageUrl
+    imageUrl,
+    imageStorage
 }) => {
     return axios.post(`${host}/api/nft/contract/mint`,{
         contractAddress,
@@ -25,7 +26,8 @@ export const mintAndGive = ({
         tokenURI,
         name,
         description,
-        imageUrl
+        imageUrl,
+        imageStorage
     })
 }
 
