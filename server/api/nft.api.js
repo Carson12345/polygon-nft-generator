@@ -64,13 +64,13 @@ async function mintToAddressByContract({
 
     // only work in testnet
     // const NFTContract = new ethers.Contract(contractAddress, ContractJSON.abi, signer);
-    // const NFTContract = await ethers.getContractFactory("NFTGenerator");
-    // const NFTContractCallable = NFTContract.attach(contractAddress);
-    // console.log(`Minting TokenURI: ${tokenURI} to: ${receiverAddress}`);
-    // let txn = await NFTContractCallable.mint(receiverAddress, tokenURI).then();
-    // console.log("Minted");
+    const NFTContract = await ethers.getContractFactory("NFTGenerator");
+    const NFTContractCallable = NFTContract.attach(contractAddress);
+    console.log(`Minting TokenURI: ${tokenURI} to: ${receiverAddress}`);
+    let txn = await NFTContractCallable.mint(receiverAddress, tokenURI).then();
+    console.log("Minted");
     return ({
-        // txn
+        txn
     });
 }
 
